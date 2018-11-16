@@ -21,16 +21,21 @@ navbarPage("Warehouse Determination", id="nav",
                         absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
                                       draggable = TRUE, top = 60, left = 20, right = "auto", bottom = "auto",
                                       width = 330, height = "auto",
-                                      
-                                      h2("Download "),
+                                      h3("Contol Panel"),
+                                      radioButtons("sample_or_own","I Want to use sample data.",
+                                                   choices = c("Yes","No"),
+                                                   selected = "No",
+                                                   inline=T),
+                                      conditionalPanel("input.sample_or_own == 'No'",
+                                      h3("Download "),
                                       downloadButton("downloadData", "Download the File Template"), 
                                       fileInput("file1", "Choose CSV File",
                                                 accept = c(
                                                   "text/csv",
                                                   "text/comma-separated-values,text/plain",
                                                   ".csv")
-                                      ),
-                                      checkboxInput("header", "My File has a Header", TRUE),
+                                      )),
+                                      
                                       tags$hr(),
                                       sliderInput(inputId = "no_of_wh",label = "No of Warehouse",value=4,min = 1,max=10),
                                       numericInput("seed","Seed for K-Means",100,min=0,max=101),
@@ -42,7 +47,7 @@ navbarPage("Warehouse Determination", id="nav",
                         )
                         
                     )
-           ),
+           )
            
            # tabPanel("Data explorer",
            #          fluidRow(
@@ -72,5 +77,4 @@ navbarPage("Warehouse Determination", id="nav",
            #          DT::dataTableOutput("ziptable")
            # ),
            
-           conditionalPanel("false", icon("crosshair"))
 )

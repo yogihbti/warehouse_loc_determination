@@ -4,8 +4,6 @@ library(scales)
 library(lattice)
 library(dplyr)
 
-# Leaflet bindings are a bit slow; for now we'll just sample to compensate
-
 
 function(input, output, session) {
   
@@ -37,28 +35,46 @@ function(input, output, session) {
   #load data from file to a reactive variable
   
   data_read <- reactive({ 
-    req(input$file1) ## ?req #  require that the input is available
+    #req(input$file1) ## ?req #  require that the input is available
+    #req(input$sample_or_own)
+    #browser()
+    inFile <- input$file1
+    if(input$sample_or_own=="Yes"){
+      df <- read.csv("./data/geo_data_input.csv", header = TRUE)
+       
+    }else if(is.null(inFile)){
+      
+      df<-data.frame(Longitude=numeric(),Latitude=numeric(),SalesVal=numeric())
+      
+    } else{
+      df <- read.csv(inFile$datapath, header = TRUE)
+    } 
     
-    inFile <- input$file1 
-    df <- read.csv(inFile$datapath, header = input$header)
     return(df)
+    
   })
 
   #observe for input file and reactive value to be available to update the map
   
-  observeEvent(input$file1,{
+  observeEvent( {input$file1
+                 input$sample_or_own
+                 }
+               ,{
         leafletProxy("map", data = data_read()) %>%
         clearShapes() %>%
+        clearMarkers() %>%
         addCircles(lng=~Longitude, lat=~Latitude, radius=~log(SalesVal)*5000,fillOpacity=.4,weight = 1 ,color="orange")
-    }
+    },
+    ignoreNULL = FALSE
     
   )
+  
+  
+  
   
   #observe the clustering button clicked- do the clustering to set color groups
   observeEvent(input$run_cluster,{
     set.seed(input$seed)
-    #browser()
-    if(!is.null(input$file1)){
       df<-data_read()
       df_matrix<-df[,c("Latitude","Longitude")]
       cluster_geo=kmeans(df_matrix,input$no_of_wh)
@@ -74,10 +90,7 @@ function(input, output, session) {
                    weight = 1,
                    color=~pal(cluster),group=~cluster)
       cluster_df(df)
-    }else{
-      showNotification("First upload a file.")
-    }
-    
+
   })
   
   observeEvent(input$find_cog,{
