@@ -11,6 +11,7 @@ navbarPage("Warehouse Determination", id="nav",
                         tags$head(
                           # Include our custom CSS
                           includeCSS("styles.css"),
+                          includeScript("google-analytics.js"),
                           includeScript("gomap.js")
                         ),
                         
