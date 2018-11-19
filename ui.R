@@ -12,15 +12,24 @@ navbarPage("Warehouse Determination", id="nav",
                           # Include our custom CSS
                           includeCSS("styles.css"),
                           includeScript("google-analytics.js"),
-                          includeScript("gomap.js")
+                          includeScript("gomap.js"),
+                          includeScript("toggle_script.js")
                         ),
                         
                         # If not using custom CSS, set height of leafletOutput to a number instead of percent
                         leafletOutput("map", width="100%", height="100%"),
                         
+                        absolutePanel(id = "toggle_bt", class = "panel panel-default mobileShow", fixed = TRUE,
+                                      draggable = TRUE, top =100, left = 120, right = "auto", bottom = "auto",
+                                      width = 120, height = "auto",
+                                      includeHTML('html_button.html') 
+                                      
+                        ),
+                        
+
                         # Shiny versions prior to 0.11 should use class = "modal" instead.
                         absolutePanel(id = "controls", class = "panel panel-default", fixed = TRUE,
-                                      draggable = TRUE, top = 60, left = 20, right = "auto", bottom = "auto",
+                                      draggable = TRUE, top = 160, left = 20, right = "auto", bottom = "auto",
                                       width = 330, height = "auto",
                                       h4("Find Best Warehousing Locations"),
                                       radioButtons("sample_or_own","I Want to use sample data.",
